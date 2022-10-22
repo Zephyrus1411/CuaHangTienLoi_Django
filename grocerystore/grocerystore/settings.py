@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'grocerystoreapp.apps.GrocerystoreappConfig',
     'rest_framework',
     'drf_yasg',
-    'oauth2_provider'
+    'oauth2_provider',
+    'corsheaders',
 ]
 
 REST_FRAMEWORK = {
@@ -58,12 +59,15 @@ OAUTH2_PROVIDER = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'grocerystore.urls'
 
@@ -94,7 +98,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'grocerystoreappdb',
         'USER': 'root',
-        'PASSWORD': 'nguyentantai14',
+        'PASSWORD': '12345678',
         'HOST': '',
     }
 }

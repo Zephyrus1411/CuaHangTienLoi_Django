@@ -42,7 +42,17 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField(source='image')
     category = CategorySerializer()
+
+    def get_image(self, obj):
+        request = self.context['request']
+        # if obj.image and obj.image.name.startswith("/static"):
+        #     pass
+        # else:
+        path = '/static/%s' % obj.image.name
+
+        return request.build_absolute_uri(path)
 
     class Meta:
         model = Product

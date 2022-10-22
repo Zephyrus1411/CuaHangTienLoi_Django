@@ -28,6 +28,14 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.filter(active=True)
     serializer_class = CategorySerializer
 
+    def get_queryset(self):
+        q = self.queryset
+
+        kw = self.request.query_params.get('kw')
+        if kw:
+            q = q.filter(name__icontains=kw)
+
+        return q
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.filter(active=True)
