@@ -41,6 +41,19 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.filter(active=True)
     serializer_class = ProductSerializer
 
+    def get_queryset(self):
+        queryset = self.queryset
+
+        kw = self.request.query_params.get("kw")
+        if kw:
+            queryset = queryset.filter(name__icontains=kw)
+
+        category_id = self.request.query_params.get("category_id")
+        if category_id:
+            queryset = queryset.filter(category_id=category_id)
+
+        return queryset
+
     @swagger_auto_schema(
         operation_description='Get the comments of a lesson',
         responses={
@@ -72,6 +85,15 @@ class CommentViewSet(viewsets.ViewSet, generics.CreateAPIView,
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.filter(active=True)
     serializer_class = OrderSerializer
+
+    @action(methods=['get'], detail=True, url_path='order-detail')
+    def get_orderdetail(self, request, pk):
+        order = self.get_object()
+        order_detail = OrderDetail.objects.filter(bookingID=order.id, active=True)
+
+        return Response(data=OrderDetailSerializer(order_detail, many=True,
+                                                     context={'request': request}).data,
+                        status=status.HTTP_200_OK)
 
 
 class OrderDetailViewSet(viewsets.ModelViewSet):

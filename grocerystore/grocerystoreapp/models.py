@@ -39,6 +39,8 @@ class Product(ModelBase):
 class Order(ModelBase):
     amount = models.DecimalField(decimal_places=0, max_digits=10)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    address = models.CharField(max_length=250, null=True)
+    phone = models.CharField(max_length=50, null=True)
 
 
 class OrderDetail(models.Model):

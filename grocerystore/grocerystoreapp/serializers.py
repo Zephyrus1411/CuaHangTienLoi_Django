@@ -74,18 +74,15 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
 
     class Meta:
         model = Order
-        fields = ['amount', 'user']
+        fields = ['id','amount', 'user', 'address', 'phone']
 
 
 class OrderDetailSerializer(serializers.ModelSerializer):
-    order = OrderSerializer()
-    product = ProductSerializer()
 
     class Meta:
         model = OrderDetail
-        fields = ['order', 'product', 'unit_price', 'numb']
+        fields = ['id', 'order', 'product', 'unit_price', 'numb']
 
