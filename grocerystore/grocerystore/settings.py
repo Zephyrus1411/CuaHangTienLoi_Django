@@ -98,7 +98,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'grocerystoreappdb',
         'USER': 'root',
-        'PASSWORD': '12345678',
+        'PASSWORD': 'nguyentantai14',
         'HOST': '',
     }
 }

@@ -1,0 +1,244 @@
+{% extends 'admin/base_site.html' %}
+
+{% block title %} Dashboard {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+
+{% endblock stylesheets %}
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<style>
+body {
+
+     line-height: 1.5;
+     margin: 0;
+     color: #525f7f;}
+    .row {
+        display: flex;
+        margin: 15px 10px;
+        flex-wrap: wrap;
+        }
+    .card-stats{
+        padding: 1rem 1.5rem;
+        text-align: center;
+        background-color: azure;
+    }
+    .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    border: 1px solid rgba(0,0,0,.05);
+    border-radius: 0.375rem;
+    background-color: azure;
+    background-clip: border-box;
+    border: 0;
+    box-shadow: 0 0 2rem 0 rgb(136 152 170 / 15%);
+}
+
+.col-md-6 {
+    max-width: 50%;
+    flex: 0 0 50%;
+}
+.col-xl-3 {
+    max-width: 30%;
+    flex: 0 0 30%;
+}
+.form{
+    width: 200px;
+    height: 50px;
+}
+
+</style>
+<div class="color" >
+  <h4 class="text-center">THỐNG KÊ & BÁO CÁO</h4>
+    <h5> {{dau}}</h5>
+  <div class="row" >
+      <div class="col-xl-3 col-md-6">
+        <div class="card card-stats " >
+          <!-- Card body -->
+          <div >
+            <div class="row">
+              <div class="col">
+                <h5 class="card-title text-uppercase text-muted mb-0">Số Đơn Hàng</h5>
+                <span class="h2 font-weight-bold mb-0">{{ order_count }}</span>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-md-6">
+        <div class="card card-stats">
+          <!-- Card body -->
+          <div >
+            <div class="row">
+              <div class="col">
+                <h5 class="card-title text-uppercase text-muted mb-0">Số Sản Phẩm Được Đặt</h5>
+                <span class="h2 font-weight-bold mb-0">{{pr_count.numb__sum}}</span>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-md-6">
+        <div class="card card-stats">
+          <!-- Card body -->
+          <div >
+            <div class="row">
+              <div class="col">
+                <h5 class="card-title text-uppercase text-muted mb-0">Tổng Doanh Thu</h5>
+                <span class="h2 font-weight-bold mb-0">{{ turnover.amount__sum}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+<div  class="container" style="text-align: right;">
+  <form>
+      <div class="form-group">
+          <select name="cars" class="form" id="cars">
+              {% if cars == 'nam'%}
+                <option value="nam">Năm</option>
+                <option value="thang">Tháng</option>
+              {% else %}
+                <option value="thang">Tháng</option>
+                <option value="nam">Năm</option>
+              {% endif %}
+          </select>
+      </div>
+      <input type="submit" value="Thống kê" class="btn btn-success" />
+  </form>
+</div>
+<div style="height: 100px; width: 50%; display: flex;">
+    <canvas id="mysChart" style="margin: 15px"></canvas>
+    <canvas id="myChart" style="margin: 15px"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    let labelss = []
+    let datas = []
+    let colorss = []
+    let borderColorss = []
+    let rs, gs, bs
+    {% for s in totalorder %}
+        {% if s == None %}
+            datas.push(0)
+        {% else %}
+            datas.push({{ s }})
+        {% endif %}
+        rs = parseInt(Math.random() * 255)
+        bs = parseInt(Math.random() * 255)
+        gs = parseInt(Math.random() * 255)
+        colorss.push(`rgba(${rs}, ${gs}, ${bs}, 0.8)`)
+        borderColorss.push(`rgba(${rs}, ${gs}, ${bs}, 1)`)
+    {% endfor%}
+    let datass = []
+    {% for s in totalbooking %}
+        {% if s == None %}
+            datass.push(0)
+        {% else %}
+            datass.push({{ s }})
+        {% endif %}
+    {% endfor%}
+
+    type = ""
+    let labels = []
+    let data = []
+    let colors = []
+    let borderColors = []
+    let r, g, b
+    {% for c in a %}
+    labels.push({{ c }})
+
+    {% endfor %}
+    {% for s in total %}
+        {% if s.amount__sum == None %}
+            data.push(0)
+        {% else %}
+            data.push({{ s.amount__sum }})
+        {% endif %}
+        r = parseInt(Math.random() * 255)
+    g = parseInt(Math.random() * 255)
+    b = parseInt(Math.random() * 255)
+    colors.push(`rgba(${r}, ${g}, ${b}, 0.8)`)
+    borderColors.push(`rgba(${r}, ${g}, ${b}, 1)`)
+    {% endfor%}
+
+    window.onload = function() {
+        const ctxs = document.getElementById('mysChart').getContext('2d')
+
+        const mysChart = new Chart(ctxs, {
+            {%if cars != 'nam'%}
+                type: 'bar',
+            {% endif %}
+            {%if cars == 'nam'%}
+                type: 'line',
+            {% endif %}
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Thong ke so don dat hang',
+                    data: datas,
+                    backgroundColor: colorss,
+                    borderColor: borderColorss,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        const ctx = document.getElementById('myChart').getContext('2d')
+
+        const myChart = new Chart(ctx, {
+            {%if cars != 'nam'%}
+                type: 'line',
+            {% endif %}
+            {%if cars == 'nam'%}
+                type: 'bar',
+            {% endif %}
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Thong ke doanh thu',
+                    data: data,
+                    backgroundColor: colors,
+                    borderColor: borderColors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+    }
+</script>
+
+
+{% endblock %}
+{% block javascripts %}
+
+  <script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
+  <script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
+
+{% endblock javascripts %}

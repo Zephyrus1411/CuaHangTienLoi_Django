@@ -1,6 +1,8 @@
 from django.urls import path, include
+from django.contrib import admin
 from .import views
 from rest_framework import routers
+from .admin import admin_site
 
 router = routers.DefaultRouter()
 router.register(prefix='category', viewset=views.CategoryViewSet, basename='category')
@@ -12,4 +14,5 @@ router.register(prefix='comments', viewset=views.CommentViewSet, basename='comme
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('admin/', admin_site.urls)
 ]
