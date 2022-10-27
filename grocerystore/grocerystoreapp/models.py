@@ -27,7 +27,7 @@ class Category(ModelBase):
 class Product(ModelBase):
     name = models.CharField(max_length=50, null=False)
     description = models.CharField(max_length=250, null=True)
-    price = models.DecimalField(decimal_places=2, max_digits=10)
+    price = models.DecimalField(decimal_places=0, max_digits=10)
     manufacturer = models.CharField(max_length=100, null=True)
     image = models.ImageField(upload_to='image/%Y/%m', default=None)
     category = models.ForeignKey(Category, null=False, on_delete=models.CASCADE)

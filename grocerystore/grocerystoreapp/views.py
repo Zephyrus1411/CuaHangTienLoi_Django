@@ -63,9 +63,9 @@ class ProductViewSet(viewsets.ModelViewSet):
     @action(methods=['get'], url_path='comments', detail=True)
     def get_comments(self, request, pk):
         product = self.get_object()
-        comments = product.comments.select_related('user').filter(active=True)
+        comments = product.comments.select_related('user')
 
-        return Response(CommentSerializer(comments, many=True).data,
+        return Response(CommentSerializer(comments, many=True, context={'request': request}).data,
                         status=status.HTTP_200_OK)
 
 

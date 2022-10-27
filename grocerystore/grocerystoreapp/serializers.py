@@ -5,24 +5,24 @@ from .models import Category, User, Product, Order, OrderDetail, Comment
 
 
 class UserSerializer(serializers.ModelSerializer):
-    avatar = serializers.SerializerMethodField(source='avatar')
+    avatar_path = serializers.SerializerMethodField(source='avatar')
 
-    def get_avatar(self, obj):
-        request = self.context['request']
-        if obj.avatar and not obj.avatar.name.startswith("/static"):
-
+    def get_avatar_path(self, obj):
+        request = self.context.get('request')
+        if obj.avatar and not obj.avatar.name.startswith('/static'):
             path = '/static/%s' % obj.avatar.name
-
             return request.build_absolute_uri(path)
+            # return 1
 
     class Meta:
         model = User
         fields = ['id', 'first_name', 'last_name',
-                  'username', 'password', 'email',
-                  'avatar']
+                  'username', 'password', 'email', 'avatar_path']
         extra_kwargs = {
             'password': {
                 'write_only': True
+            }, 'avatar_path': {
+                'read_only': True
             }
         }
 
@@ -34,6 +34,24 @@ class UserSerializer(serializers.ModelSerializer):
 
         return user
 
+class UserAuthSerializer(UserSerializer):
+    avatar_path = serializers.SerializerMethodField(source='avatar')
+
+    def get_avatar_path(self, obj):
+        request = self.context.get('request')
+        if obj.avatar and not obj.avatar.name.startswith('/static'):
+            path = '/static/%s' % obj.avatar.name
+            return request.build_absolute_uri(path)
+            # return 1
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'avatar_path']
+        extra_kwargs = {
+            'avatar_path': {
+                'read_only': True
+            }
+        }
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,7 +61,6 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField(source='image')
-    category = CategorySerializer()
 
     def get_image(self, obj):
         request = self.context['request']
@@ -66,8 +83,8 @@ class CreateCommentSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-
+    user = UserAuthSerializer()
+    # user = UserSerializer()
     class Meta:
         model = Comment
         exclude = ['active']
