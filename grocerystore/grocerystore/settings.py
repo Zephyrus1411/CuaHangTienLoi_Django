@@ -55,6 +55,10 @@ OAUTH2_PROVIDER = {
     'OAUTH2_BACKEND_CLASS': 'oauth2_provider.oauth2_backends.JSONOAuthLibCore',
 }
 
+OAUTH2_INFO = {
+    "client_id": "cgdi2xycgl4DgwOihK0g9P22czhWK53S76MtRIIJ",
+    "client_secret": "o7eE1BovODbN0jujXTgpOBaqcTxHxXF1bGdIRcooFLBLy5sU2iR0UNWu4cYDbDUzJ6wWLIZNCU3zuYoJAPmwqpGqomvbPVSdxPKhdi4pRD4Er2xXhpTTHnv6cWmPHhht",
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -98,7 +102,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'grocerystoreappdb',
         'USER': 'root',
-        'PASSWORD': '12345678',
+        'PASSWORD': 'nguyentantai14',
         'HOST': '',
     }
 }
@@ -147,3 +151,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+ALLOWED_HOSTS=['*']
+
+CORS_ORIGIN_ALLOW_ALL = True

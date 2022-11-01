@@ -1,6 +1,8 @@
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .perms import CommentOwnerPerms
+from rest_framework.views import APIView
+from django.conf import settings
 from rest_framework import viewsets, generics, status, permissions
 from drf_yasg.utils import swagger_auto_schema
 from .models import Category, User, Product, Order, OrderDetail,Comment
@@ -36,6 +38,10 @@ class CategoryViewSet(viewsets.ModelViewSet):
             q = q.filter(name__icontains=kw)
 
         return q
+
+class OauthInfo(APIView):
+    def get(self, request):
+        return Response(settings.OAUTH2_INFO, status=status.HTTP_200_OK)
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.filter(active=True)
